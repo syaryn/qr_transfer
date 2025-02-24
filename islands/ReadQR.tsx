@@ -29,11 +29,12 @@ export default function ReadQR() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const qrScannerRef = useRef<QrScanner | null>(null);
 
-  // カメラ切替処理: 引数 mode に変更
+  // カメラ切替: destroyを使わずsetCameraによりモードを切り替え
   const changeCamera = async (mode: "environment" | "user") => {
-    await qrScannerRef.current?.stop();
-    await qrScannerRef.current?.setCamera(mode);
-    await qrScannerRef.current?.start();
+    if (!qrScannerRef.current) return;
+    await qrScannerRef.current.stop();
+    await qrScannerRef.current.setCamera(mode);
+    await qrScannerRef.current.start();
   };
 
   useEffect(() => {
@@ -41,9 +42,9 @@ export default function ReadQR() {
       qrScannerRef.current = new QrScanner(
         videoRef.current,
         (result: any) => {
+          // カメラをstopせず、継続して映像を表示
           scannedData.value = result.data;
           showPopup.value = true;
-          qrScannerRef.current?.stop();
         },
         { facingMode: cameraFacingMode.value, returnDetailedScanResult: true },
       );
@@ -59,7 +60,7 @@ export default function ReadQR() {
   const switchCamera = async (mode: "environment" | "user") => {
     if (cameraFacingMode.value !== mode) {
       cameraFacingMode.value = mode;
-      changeCamera(mode);
+      await changeCamera(mode);
     }
   };
 
@@ -73,6 +74,7 @@ export default function ReadQR() {
 
   const closeModal = () => {
     showPopup.value = false;
+    // 必要に応じて再開
     qrScannerRef.current?.start();
   };
 
