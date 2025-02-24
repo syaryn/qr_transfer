@@ -18,5 +18,6 @@
   "readqr.description": "QRコードをスキャンしてデータを取得します。QRコードの読み取りは端末内で行われるので外部には送信されず安全に利用できます。",
   "readqr.trademark": "QRコードは（株）デンソーウェーブの登録商標です",
   "camera.environment": "外向き",
-  "camera.user": "内向き"
+  "camera.user": "内向き",
+  "camera.label": "カメラ"
 }
