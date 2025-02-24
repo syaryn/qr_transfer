@@ -5,17 +5,17 @@ import QrScanner from "npm:qr-scanner";
 import { IconCopy, IconCopyCheck, IconX } from "npm:@tabler/icons-preact";
 import { t } from "../i18nStore.ts";
 
-// signals の更新
-const cameraList = useSignal<string[]>([]);
-const selectedCameraIndex = useSignal<number>(0);
-
 export default function ReadQR() {
-  const modalSize = Math.min(globalThis.innerWidth * 0.9, 400);
-
-  const videoRef = useRef<HTMLVideoElement>(null);
+  // useSignal をコンポーネント内に移動
+  const cameraList = useSignal<string[]>([]);
+  const selectedCameraIndex = useSignal<number>(0);
   const scannedData = useSignal("");
   const showPopup = useSignal(false);
   const copied = useSignal(false);
+
+  const modalSize = Math.min(globalThis.innerWidth * 0.9, 400);
+
+  const videoRef = useRef<HTMLVideoElement>(null);
   const qrScannerRef = useRef<QrScanner | null>(null);
 
   useEffect(() => {
@@ -46,7 +46,6 @@ export default function ReadQR() {
     };
   }, []);
 
-  // インデックス指定でカメラ切り替え
   const switchCamera = (index: number) => {
     if (cameraList.value[index] && selectedCameraIndex.value !== index) {
       selectedCameraIndex.value = index;
@@ -69,7 +68,6 @@ export default function ReadQR() {
 
   return (
     <div class="mt-8 bg-white p-6 rounded-lg shadow">
-      {/* カメラリストがあればラベルとボタンを表示 */}
       {cameraList.value.length > 0 && (
         <div class="flex flex-col items-center mb-2">
           <label class="mb-2">{t("camera.label")}</label>
@@ -104,7 +102,7 @@ export default function ReadQR() {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            style={{ width: `${modalSize}px` }} // 追加: 横幅を modalSize で指定
+            style={{ width: `${modalSize}px` }}
             class="relative bg-white p-4 rounded-lg shadow-lg max-h-[80vh]"
           >
             <button
