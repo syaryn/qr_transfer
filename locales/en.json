@@ -1,0 +1,22 @@
+{
+  "copyFailed": "Copy failed",
+  "close": "Close",
+  "labelData": "Data",
+  "placeholderData": "Enter your data",
+  "labelSize": "Size (px)",
+  "placeholderSize": "e.g., 300",
+  "labelFormat": "File format",
+  "qrError": "Failed to generate QR code due to server error.",
+  "loading": "Loading...",
+  "dataQRTab": "Data QR",
+  "readingQRTab": "Reading Screen",
+  "readingMessage": "Please open the reading screen on the shared device and scan this QR code.",
+  "home.title": "QR Code Data Transfer (Share)",
+  "home.description": "Easily transfer data between different OS and platforms via QR codes.",
+  "home.trademark": "QR Code is a registered trademark of DENSO WAVE INCORPORATED",
+  "readqr.title": "Read QR Code",
+  "readqr.description": "Scan the QR code to retrieve data.",
+  "readqr.trademark": "QR Code is a registered trademark of DENSO WAVE INCORPORATED",
+  "camera.environment": "Environment",
+  "camera.user": "User"
+}

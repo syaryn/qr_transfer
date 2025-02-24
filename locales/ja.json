@@ -1,0 +1,22 @@
+{
+  "copyFailed": "コピーに失敗しました",
+  "close": "閉じる",
+  "labelData": "データ",
+  "placeholderData": "データを入力してください",
+  "labelSize": "サイズ(px)",
+  "placeholderSize": "例: 300",
+  "labelFormat": "ファイル形式",
+  "qrError": "サーバーエラーによりQRコードの生成に失敗しました。",
+  "loading": "読み込み中...",
+  "dataQRTab": "データQR",
+  "readingQRTab": "読み取り画面",
+  "readingMessage": "共有先の端末で読み取り画面を表示してこのQRを読み込ませてください。",
+  "home.title": "ローカルQR転送 - QR生成",
+  "home.description": "QRコードを介して異なるOS・プラットフォーム(Windows/Mac/iOS/Android・・・)間のデータ転送を簡単にできます。\nQRの生成は端末内で行われるので外部には送信されず安全に利用できます。",
+  "home.trademark": "QRコードは（株）デンソーウェーブの登録商標です",
+  "readqr.title": "ローカルQR転送 - QR読み取り",
+  "readqr.description": "QRコードをスキャンしてデータを取得します。QRコードの読み取りは端末内で行われるので外部には送信されず安全に利用できます。",
+  "readqr.trademark": "QRコードは（株）デンソーウェーブの登録商標です",
+  "camera.environment": "外向き",
+  "camera.user": "内向き"
+}
