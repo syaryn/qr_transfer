@@ -46,7 +46,10 @@ export default function ReadQR() {
           scannedData.value = result.data;
           showPopup.value = true;
         },
-        { facingMode: cameraFacingMode.value, returnDetailedScanResult: true },
+        {
+          preferredCamera: cameraFacingMode.value,
+          returnDetailedScanResult: true,
+        },
       );
       qrScannerRef.current.start();
     }
