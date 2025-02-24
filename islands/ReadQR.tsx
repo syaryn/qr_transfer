@@ -5,14 +5,12 @@ import QrScanner from "npm:qr-scanner";
 import { IconCopy, IconCopyCheck, IconX } from "npm:@tabler/icons-preact";
 import { t } from "../i18nStore.ts";
 
-export default function ReadQR() {
-  // 追加: モーダルの横幅計算
-  const modalSize = Math.min(globalThis.innerWidth * 0.9, 400);
+// signals の更新
+const cameraList = useSignal<string[]>([]);
+const selectedCameraIndex = useSignal<number>(0);
 
-  const cameraOptions = useSignal<{ environment: string; user: string } | null>(
-    null,
-  );
-  const selectedMode = useSignal<"environment" | "user">("environment");
+export default function ReadQR() {
+  const modalSize = Math.min(globalThis.innerWidth * 0.9, 400);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const scannedData = useSignal("");
@@ -34,10 +32,11 @@ export default function ReadQR() {
       qrScannerRef.current.start();
     }
 
+    // カメラリストを取得し、初期カメラをセット
     QrScanner.listCameras(true).then((devices) => {
-      if (devices.length >= 2) {
-        cameraOptions.value = { environment: devices[0], user: devices[1] };
-        selectedMode.value = "environment";
+      cameraList.value = devices;
+      if (devices.length > 0) {
+        selectedCameraIndex.value = 0;
         qrScannerRef.current?.setCamera(devices[0]);
       }
     });
@@ -47,11 +46,11 @@ export default function ReadQR() {
     };
   }, []);
 
-  const switchCamera = (mode: "environment" | "user") => {
-    if (cameraOptions.value && selectedMode.value !== mode) {
-      selectedMode.value = mode;
-      const newCamera = cameraOptions.value[mode];
-      qrScannerRef.current?.setCamera(newCamera);
+  // インデックス指定でカメラ切り替え
+  const switchCamera = (index: number) => {
+    if (cameraList.value[index] && selectedCameraIndex.value !== index) {
+      selectedCameraIndex.value = index;
+      qrScannerRef.current?.setCamera(cameraList.value[index]);
     }
   };
 
@@ -70,30 +69,26 @@ export default function ReadQR() {
 
   return (
     <div class="mt-8 bg-white p-6 rounded-lg shadow">
-      {cameraOptions.value && (
-        <div class="flex justify-center mb-2">
-          <button
-            type="button"
-            class={`px-3 py-1 border ${
-              selectedMode.value === "environment"
-                ? "bg-blue-500 text-white"
-                : "bg-white text-gray-700"
-            }`}
-            onClick={() => switchCamera("environment")}
-          >
-            {t("camera.environment")}
-          </button>
-          <button
-            type="button"
-            class={`ml-2 px-3 py-1 border ${
-              selectedMode.value === "user"
-                ? "bg-blue-500 text-white"
-                : "bg-white text-gray-700"
-            }`}
-            onClick={() => switchCamera("user")}
-          >
-            {t("camera.user")}
-          </button>
+      {/* カメラリストがあればラベルとボタンを表示 */}
+      {cameraList.value.length > 0 && (
+        <div class="flex flex-col items-center mb-2">
+          <label class="mb-2">{t("camera.label")}</label>
+          <div class="flex">
+            {cameraList.value.map((_, index) => (
+              <button
+                key={index}
+                type="button"
+                onClick={() => switchCamera(index)}
+                class={`px-3 py-1 border mx-1 ${
+                  selectedCameraIndex.value === index
+                    ? "bg-blue-500 text-white"
+                    : "bg-white text-gray-700"
+                }`}
+              >
+                {index + 1}
+              </button>
+            ))}
+          </div>
         </div>
       )}
       <video
