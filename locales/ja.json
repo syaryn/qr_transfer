@@ -12,7 +12,7 @@
   "readingQRTab": "読み取り画面",
   "readingMessage": "共有先の端末で読み取り画面を表示してこのQRを読み込ませてください。",
   "home.title": "ローカルQR転送 - QR生成",
-  "home.description": "QRコードを介して異なるOS・プラットフォーム(Windows/Mac/iOS/Android・・・)間のデータ転送を簡単にできます。\nQRの生成は端末内で行われるので外部には送信されず安全に利用できます。",
+  "home.description": "QRコードを介して異なるOS・プラットフォーム(Windows/Mac/iOS/Android・・・)間のデータ転送を簡単にできます。QRの生成は端末内で行われるので外部には送信されず安全に利用できます。",
   "home.trademark": "QRコードは（株）デンソーウェーブの登録商標です",
   "readqr.title": "ローカルQR転送 - QR読み取り",
   "readqr.description": "QRコードをスキャンしてデータを取得します。QRコードの読み取りは端末内で行われるので外部には送信されず安全に利用できます。",
