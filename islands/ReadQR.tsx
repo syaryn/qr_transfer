@@ -18,9 +18,8 @@ interface CameraDevice {
 }
 
 export default function ReadQR() {
-  // 型変更: cameraList をCameraDevice型の配列にする
-  const cameraList = useSignal<CameraDevice[]>([]);
-  const selectedCameraIndex = useSignal<number>(0);
+  // 新しくカメラ切替用シグナルを定義
+  const cameraFacingMode = useSignal<"environment" | "user">("environment");
   const scannedData = useSignal("");
   const showPopup = useSignal(false);
   const copied = useSignal(false);
@@ -30,10 +29,10 @@ export default function ReadQR() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const qrScannerRef = useRef<QrScanner | null>(null);
 
-  // ヘルパー: カメラ切替処理
-  const changeCamera = async (deviceId: string) => {
+  // カメラ切替処理: 引数 mode に変更
+  const changeCamera = async (mode: "environment" | "user") => {
     await qrScannerRef.current?.stop();
-    await qrScannerRef.current?.setCamera(deviceId);
+    await qrScannerRef.current?.setCamera(mode);
     await qrScannerRef.current?.start();
   };
 
@@ -41,36 +40,26 @@ export default function ReadQR() {
     if (videoRef.current) {
       qrScannerRef.current = new QrScanner(
         videoRef.current,
-        (result: any) => { // result型は any とする
+        (result: any) => {
           scannedData.value = result.data;
           showPopup.value = true;
           qrScannerRef.current?.stop();
         },
-        { returnDetailedScanResult: true },
+        { facingMode: cameraFacingMode.value, returnDetailedScanResult: true },
       );
       qrScannerRef.current.start();
     }
-
-    // カメラリストを取得し、初期カメラをセット
-    QrScanner.listCameras(true).then((devices: CameraDevice[]) => {
-      cameraList.value = devices;
-      if (devices.length > 0) {
-        selectedCameraIndex.value = 0;
-        // 修正: changeCamera を利用して初期カメラを設定
-        changeCamera(devices[0].id);
-      }
-    });
 
     return () => {
       qrScannerRef.current?.stop();
     };
   }, []);
 
-  const switchCamera = async (index: number) => {
-    if (cameraList.value[index] && selectedCameraIndex.value !== index) {
-      selectedCameraIndex.value = index;
-      // 修正: changeCamera を利用してカメラを切り替え
-      changeCamera(cameraList.value[index].id);
+  // モード切替用関数に変更
+  const switchCamera = async (mode: "environment" | "user") => {
+    if (cameraFacingMode.value !== mode) {
+      cameraFacingMode.value = mode;
+      changeCamera(mode);
     }
   };
 
@@ -89,27 +78,34 @@ export default function ReadQR() {
 
   return (
     <div class="mt-8 bg-white p-6 rounded-lg shadow">
-      {cameraList.value.length > 0 && (
-        <div class="flex flex-col items-center mb-2">
-          <label class="mb-2">{t("camera.label")}</label>
-          <div class="flex">
-            {cameraList.value.map((_, index) => (
-              <button
-                key={index}
-                type="button"
-                onClick={() => switchCamera(index)}
-                class={`px-3 py-1 border mx-1 ${
-                  selectedCameraIndex.value === index
-                    ? "bg-blue-500 text-white"
-                    : "bg-white text-gray-700"
-                }`}
-              >
-                {index + 1}
-              </button>
-            ))}
-          </div>
+      {/* カメラ切替用ボタン */}
+      <div class="flex flex-col items-center mb-2">
+        <label class="mb-2">{t("camera.label")}</label>
+        <div class="flex">
+          <button
+            type="button"
+            onClick={() => switchCamera("environment")}
+            class={`px-3 py-1 border mx-1 ${
+              cameraFacingMode.value === "environment"
+                ? "bg-blue-500 text-white"
+                : "bg-white text-gray-700"
+            }`}
+          >
+            {t("environment")}
+          </button>
+          <button
+            type="button"
+            onClick={() => switchCamera("user")}
+            class={`px-3 py-1 border mx-1 ${
+              cameraFacingMode.value === "user"
+                ? "bg-blue-500 text-white"
+                : "bg-white text-gray-700"
+            }`}
+          >
+            {t("user")}
+          </button>
         </div>
-      )}
+      </div>
       <video
         ref={videoRef}
         class="w-full max-w-md rounded-lg shadow-lg"
