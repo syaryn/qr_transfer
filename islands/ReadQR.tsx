@@ -2,12 +2,24 @@
 import { useSignal } from "@preact/signals";
 import { useEffect, useRef } from "preact/hooks";
 import QrScanner from "npm:qr-scanner";
-import { IconCopy, IconCopyCheck, IconX } from "npm:@tabler/icons-preact";
+import {
+  IconBulb,
+  IconBulbFilled,
+  IconCopy,
+  IconCopyCheck,
+  IconX,
+} from "npm:@tabler/icons-preact";
 import { t } from "../i18nStore.ts";
 
+// 型定義を更新
+interface CameraDevice {
+  id: string;
+  label: string;
+}
+
 export default function ReadQR() {
-  // useSignal をコンポーネント内に移動
-  const cameraList = useSignal<string[]>([]);
+  // 型変更: cameraList をCameraDevice型の配列にする
+  const cameraList = useSignal<CameraDevice[]>([]);
   const selectedCameraIndex = useSignal<number>(0);
   const scannedData = useSignal("");
   const showPopup = useSignal(false);
@@ -22,7 +34,7 @@ export default function ReadQR() {
     if (videoRef.current) {
       qrScannerRef.current = new QrScanner(
         videoRef.current,
-        (result: string) => {
+        (result: any) => { // result型は any とする
           scannedData.value = result.data;
           showPopup.value = true;
           qrScannerRef.current?.stop();
@@ -33,11 +45,12 @@ export default function ReadQR() {
     }
 
     // カメラリストを取得し、初期カメラをセット
-    QrScanner.listCameras(true).then((devices) => {
+    QrScanner.listCameras(true).then((devices: CameraDevice[]) => {
       cameraList.value = devices;
       if (devices.length > 0) {
         selectedCameraIndex.value = 0;
-        qrScannerRef.current?.setCamera(devices[0]);
+        // 修正: デバイスオブジェクトの id を渡す
+        qrScannerRef.current?.setCamera(devices[0].id);
       }
     });
 
@@ -49,7 +62,8 @@ export default function ReadQR() {
   const switchCamera = (index: number) => {
     if (cameraList.value[index] && selectedCameraIndex.value !== index) {
       selectedCameraIndex.value = index;
-      qrScannerRef.current?.setCamera(cameraList.value[index]);
+      // 修正: 対象カメラオブジェクトの id を使用する
+      qrScannerRef.current?.setCamera(cameraList.value[index].id);
     }
   };
 
