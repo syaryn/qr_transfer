@@ -23,6 +23,7 @@ export default function ReadQR() {
   const scannedData = useSignal("");
   const showPopup = useSignal(false);
   const copied = useSignal(false);
+  const cameraDevices = useSignal<CameraDevice[]>([]);
 
   const modalSize = Math.min(globalThis.innerWidth * 0.9, 400);
 
@@ -51,6 +52,10 @@ export default function ReadQR() {
       );
       qrScannerRef.current.start();
     }
+
+    QrScanner.listCameras(true).then((devices) => {
+      cameraDevices.value = devices;
+    });
 
     return () => {
       qrScannerRef.current?.stop();
@@ -82,33 +87,35 @@ export default function ReadQR() {
   return (
     <div class="mt-8 bg-white p-6 rounded-lg shadow">
       {/* カメラ切替用ボタン */}
-      <div class="flex flex-col items-center mb-2">
-        <label class="mb-2">{t("camera.label")}</label>
-        <div class="flex">
-          <button
-            type="button"
-            onClick={() => switchCamera("environment")}
-            class={`px-3 py-1 border mx-1 ${
-              cameraFacingMode.value === "environment"
-                ? "bg-blue-500 text-white"
-                : "bg-white text-gray-700"
-            }`}
-          >
-            {t("environment")}
-          </button>
-          <button
-            type="button"
-            onClick={() => switchCamera("user")}
-            class={`px-3 py-1 border mx-1 ${
-              cameraFacingMode.value === "user"
-                ? "bg-blue-500 text-white"
-                : "bg-white text-gray-700"
-            }`}
-          >
-            {t("user")}
-          </button>
+      {cameraDevices.value.length > 1 && (
+        <div class="flex flex-col items-center mb-2">
+          <label class="mb-2">{t("camera.label")}</label>
+          <div class="flex">
+            <button
+              type="button"
+              onClick={() => switchCamera("environment")}
+              class={`px-3 py-1 border mx-1 ${
+                cameraFacingMode.value === "environment"
+                  ? "bg-blue-500 text-white"
+                  : "bg-white text-gray-700"
+              }`}
+            >
+              {t("environment")}
+            </button>
+            <button
+              type="button"
+              onClick={() => switchCamera("user")}
+              class={`px-3 py-1 border mx-1 ${
+                cameraFacingMode.value === "user"
+                  ? "bg-blue-500 text-white"
+                  : "bg-white text-gray-700"
+              }`}
+            >
+              {t("user")}
+            </button>
+          </div>
         </div>
-      </div>
+      )}
       <video
         ref={videoRef}
         class="w-full max-w-md rounded-lg shadow-lg"
