@@ -30,6 +30,13 @@ export default function ReadQR() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const qrScannerRef = useRef<QrScanner | null>(null);
 
+  // ヘルパー: カメラ切替処理
+  const changeCamera = async (deviceId: string) => {
+    await qrScannerRef.current?.stop();
+    await qrScannerRef.current?.setCamera(deviceId);
+    await qrScannerRef.current?.start();
+  };
+
   useEffect(() => {
     if (videoRef.current) {
       qrScannerRef.current = new QrScanner(
@@ -49,8 +56,8 @@ export default function ReadQR() {
       cameraList.value = devices;
       if (devices.length > 0) {
         selectedCameraIndex.value = 0;
-        // 修正: デバイスオブジェクトの id を渡す
-        qrScannerRef.current?.setCamera(devices[0].id);
+        // 修正: changeCamera を利用して初期カメラを設定
+        changeCamera(devices[0].id);
       }
     });
 
@@ -59,11 +66,11 @@ export default function ReadQR() {
     };
   }, []);
 
-  const switchCamera = (index: number) => {
+  const switchCamera = async (index: number) => {
     if (cameraList.value[index] && selectedCameraIndex.value !== index) {
       selectedCameraIndex.value = index;
-      // 修正: 対象カメラオブジェクトの id を使用する
-      qrScannerRef.current?.setCamera(cameraList.value[index].id);
+      // 修正: changeCamera を利用してカメラを切り替え
+      changeCamera(cameraList.value[index].id);
     }
   };
 
