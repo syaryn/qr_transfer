@@ -32,9 +32,7 @@ export default function ReadQR() {
   // カメラ切替: destroyを使わずsetCameraによりモードを切り替え
   const changeCamera = async (mode: "environment" | "user") => {
     if (!qrScannerRef.current) return;
-    await qrScannerRef.current.stop();
     await qrScannerRef.current.setCamera(mode);
-    await qrScannerRef.current.start();
   };
 
   useEffect(() => {
