@@ -2,8 +2,7 @@
   "lock": false,
   "tasks": {
     "check": "deno fmt --check && deno lint && deno check main.ts",
-    "start": "deno run -A --watch=static/,locales/,main.ts main.ts",
-    "build:css": "deno run -A npm:@tailwindcss/cli@4.1.18 -c tailwind.config.ts -i tailwind.css -o static/styles.css --minify"
+    "start": "deno run -A --watch=static/,locales/,main.ts main.ts"
   },
   "lint": {
     "rules": {
@@ -22,7 +21,6 @@
     "hono/deno": "npm:hono/deno",
     "qrcode": "npm:qrcode@1.5.3",
     "svgo": "npm:svgo@3.2.0",
-    "tailwindcss": "npm:tailwindcss@4.1.18",
     "$std/": "https://deno.land/std@0.216.0/"
   },
   "nodeModulesDir": "auto"

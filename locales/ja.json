@@ -1,6 +1,8 @@
 {
   "copyFailed": "コピーに失敗しました",
   "close": "閉じる",
+  "copy": "コピー",
+  "copied": "コピーしました",
   "labelData": "データ",
   "placeholderData": "データを入力してください",
   "labelSize": "サイズ(px)",
@@ -11,6 +13,8 @@
   "dataQRTab": "データQR",
   "readingQRTab": "読み取り画面",
   "readingMessage": "共有先の端末で読み取り画面を表示してこのQRを読み込ませてください。",
+  "generateQR": "QR生成",
+  "scanResult": "読み取り結果",
   "home.title": "ローカルQR転送 - QR生成",
   "home.description": "QRコードを介して異なるOS・プラットフォーム(Windows/Mac/iOS/Android・・・)間のデータ転送を簡単にできます。QRの生成は端末内で行われるので外部には送信されず安全に利用できます。",
   "home.trademark": "QRコードは（株）デンソーウェーブの登録商標です",

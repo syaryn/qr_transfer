@@ -1,6 +1,6 @@
 # Local QR Transfer
 
-Local QR Transfer は Hono + htmx で構築した QR コード生成・読み取りアプリです。
+Local QR Transfer は Hono + htmx で構築した QR コード生成・読み取りアプリです。UI は PicoCSS (CDN) と Alpine.js (CDN) を用い、追加 CSS は最小限です。
 
 ## 機能
 
@@ -22,11 +22,7 @@ Local QR Transfer は Hono + htmx で構築した QR コード生成・読み取
    ```
    npm install
    ```
-4. CSS をビルド（初回とスタイル変更時）:
-   ```
-   deno task build:css
-   ```
-5. 開発サーバーを起動:
+4. 開発サーバーを起動:
    ```
    deno task start
    ```
@@ -34,10 +30,9 @@ Local QR Transfer は Hono + htmx で構築した QR コード生成・読み取
 ## プロジェクト構成（抜粋）
 
 - `main.ts` — Hono エントリ。`/` (生成) `/readqr` (読取) `/api/qr` (生成 API) を提供。
-- `static/` — ビルド済み CSS やアイコン、htmx、QR Scanner スクリプトなど。
+- `static/` — PicoCSS 用の最小 CSS 上書きやアイコンなど（htmx / QR Scanner は CDN 利用）。
 - `locales/` — 日英の文言 JSON。
-- `tailwind.css` / `tailwind.config.ts` — Tailwind v4 の設定と入力 CSS。
-- `deno.json` — タスク設定（`start` / `build:css` など）。
+- `deno.json` — タスク設定（`start` など）。
 
 ## 使用方法
 

@@ -1,6 +1,8 @@
 {
   "copyFailed": "Copy failed",
   "close": "Close",
+  "copy": "Copy",
+  "copied": "Copied",
   "labelData": "Data",
   "placeholderData": "Enter your data",
   "labelSize": "Size (px)",
@@ -11,6 +13,8 @@
   "dataQRTab": "Data QR",
   "readingQRTab": "Reading Screen",
   "readingMessage": "Please open the reading screen on the receiving device and scan this QR code.",
+  "generateQR": "Generate QR",
+  "scanResult": "Scan result",
   "home.title": "Local QR Transfer - QR Generation",
   "home.description": "You can easily transfer data between different OSs and platforms (Windows/Mac/iOS/Android, etc.) via QR codes. The QR generation is performed on your device, so data is not shared externally, providing a secure experience.",
   "home.trademark": "QR Code is a registered trademark of DENSO WAVE INCORPORATED",
