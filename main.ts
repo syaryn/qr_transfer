@@ -195,11 +195,11 @@ function layout(
                   this.loading = false;
                   // Check for common issues and provide actionable guidance
                   if (err?.name === 'NotAllowedError' || err?.name === 'PermissionDeniedError') {
-                    this.errorMessage = ${JSON.stringify(t(lang, "camera.permissionDenied"))};
+                    this.errorMessage = ${raw(JSON.stringify(t(lang, "camera.permissionDenied")))};
                   } else if (err?.name === 'NotSupportedError' || (location.protocol !== 'https:' && location.hostname !== 'localhost')) {
-                    this.errorMessage = ${JSON.stringify(t(lang, "camera.httpsRequired"))};
+                    this.errorMessage = ${raw(JSON.stringify(t(lang, "camera.httpsRequired")))};
                   } else {
-                    this.errorMessage = ${JSON.stringify(t(lang, "camera.genericError"))} + ' (' + (err?.name || 'Error') + ')';
+                    this.errorMessage = ${raw(JSON.stringify(t(lang, "camera.genericError")))} + ' (' + (err?.name || 'Error') + ')';
                   }
                 }
                 try {
