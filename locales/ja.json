@@ -23,5 +23,8 @@
   "readqr.trademark": "QRコードは（株）デンソーウェーブの登録商標です",
   "camera.environment": "外向き",
   "camera.user": "内向き",
-  "camera.label": "カメラ"
+  "camera.label": "カメラ",
+  "camera.permissionDenied": "カメラへのアクセスが拒否されました。ブラウザの設定でカメラの使用を許可してください。",
+  "camera.httpsRequired": "カメラの使用にはHTTPSが必要です。安全な接続を使用してください。",
+  "camera.genericError": "カメラの起動に失敗しました。カメラの設定を確認して再試行してください。"
 }

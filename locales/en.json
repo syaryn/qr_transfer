@@ -23,5 +23,8 @@
   "readqr.trademark": "QR Code is a registered trademark of DENSO WAVE INCORPORATED",
   "camera.environment": "Environment",
   "camera.user": "User",
-  "camera.label": "Camera"
+  "camera.label": "Camera",
+  "camera.permissionDenied": "Camera access denied. Please grant camera permissions in your browser settings.",
+  "camera.httpsRequired": "Camera access requires HTTPS. Please use a secure connection.",
+  "camera.genericError": "Failed to start camera. Please check your camera settings and try again."
 }

@@ -193,8 +193,14 @@ function layout(
                 } catch (err) {
                   console.error('Failed to start camera', err);
                   this.loading = false;
-                  // Show detailed error message for debugging
-                  this.errorMessage = `Camera Error: ${err?.name || 'Unknown'} - ${err?.message || err}`;
+                  // Check for common issues and provide actionable guidance
+                  if (err?.name === 'NotAllowedError' || err?.name === 'PermissionDeniedError') {
+                    this.errorMessage = ${JSON.stringify(t(lang, "camera.permissionDenied"))};
+                  } else if (err?.name === 'NotSupportedError' || location.protocol !== 'https:') {
+                    this.errorMessage = ${JSON.stringify(t(lang, "camera.httpsRequired"))};
+                  } else {
+                    this.errorMessage = ${JSON.stringify(t(lang, "camera.genericError"))};
+                  }
                 }
                 try {
                   const QrScanner = await __loadQrScanner();
