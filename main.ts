@@ -169,9 +169,17 @@ function layout(
               hasMultipleCameras: false,
               loading: true,
               errorMessage: '',
+              _initializing: false,
               async init() {
+                // Prevent double initialization
+                if (this._initializing || this.scanner) return;
+                this._initializing = true;
+                
                 const video = this.$refs.video;
-                if (!video) return;
+                if (!video) {
+                  this._initializing = false;
+                  return;
+                }
                 try {
                   const QrScanner = await __loadQrScanner();
                   this.scanner = new QrScanner(
@@ -185,23 +193,53 @@ function layout(
                 } catch (err) {
                   console.error('Failed to init qr-scanner', err);
                   this.errorMessage = 'Failed to initialize scanner.';
+                  this._initializing = false;
                   return;
                 }
-                try {
-                  await this.scanner.start();
-                  this.loading = false;
-                } catch (err) {
-                  console.error('Failed to start camera', err);
-                  this.loading = false;
-                  // Check for common issues and provide actionable guidance
-                  if (err?.name === 'NotAllowedError' || err?.name === 'PermissionDeniedError') {
-                    this.errorMessage = ${raw(JSON.stringify(t(lang, "camera.permissionDenied")))};
-                  } else if (err?.name === 'NotSupportedError' || (location.protocol !== 'https:' && location.hostname !== 'localhost')) {
-                    this.errorMessage = ${raw(JSON.stringify(t(lang, "camera.httpsRequired")))};
-                  } else {
-                    this.errorMessage = ${raw(JSON.stringify(t(lang, "camera.genericError")))} + ' (' + (err?.name || 'Error') + ')';
+                
+                // Retry logic for AbortError
+                const startCamera = async (retryCount = 0) => {
+                  try {
+                    await this.scanner.start();
+                    this.loading = false;
+                    return true;
+                  } catch (err) {
+                    console.error('Failed to start camera', err);
+                    
+                    // AbortError often means the stream was interrupted; retry once after a short delay
+                    if (err?.name === 'AbortError' && retryCount < 2) {
+                      console.log('AbortError detected, retrying in 500ms...');
+                      await new Promise(r => setTimeout(r, 500));
+                      return startCamera(retryCount + 1);
+                    }
+                    
+                    // Try to fallback to 'user' camera if 'environment' failed
+                    if (this.activeCamera === 'environment') {
+                      try {
+                        console.log('Retrying with user camera...');
+                        await this.scanner.setCamera('user');
+                        this.activeCamera = 'user';
+                        this.loading = false;
+                        return true;
+                      } catch (retryErr) {
+                        console.error('Retry with user camera failed', retryErr);
+                      }
+                    }
+
+                    this.loading = false;
+                    // Check for common issues and provide actionable guidance
+                    if (err?.name === 'NotAllowedError' || err?.name === 'PermissionDeniedError') {
+                      this.errorMessage = ${raw(JSON.stringify(t(lang, "camera.permissionDenied")))};
+                    } else if (err?.name === 'NotSupportedError' || (location.protocol !== 'https:' && location.hostname !== 'localhost')) {
+                      this.errorMessage = ${raw(JSON.stringify(t(lang, "camera.httpsRequired")))};
+                    } else {
+                      this.errorMessage = ${raw(JSON.stringify(t(lang, "camera.genericError")))} + ' (' + (err?.name || 'Error') + ')';
+                    }
+                    return false;
                   }
-                }
+                };
+                
+                await startCamera();
                 try {
                   const QrScanner = await __loadQrScanner();
                   const devices = await QrScanner.listCameras(true);
