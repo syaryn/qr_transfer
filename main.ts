@@ -156,7 +156,7 @@ function layout(
             const mod = await import('https://cdn.jsdelivr.net/npm/qr-scanner@1.4.2/qr-scanner.min.js');
             const QrScanner = mod?.default;
             if (!QrScanner) throw new Error('Failed to load qr-scanner');
-            QrScanner.WORKER_PATH = 'https://cdn.jsdelivr.net/npm/qr-scanner@1.4.2/qr-scanner-worker.min.js';
+            // QrScanner.WORKER_PATH is not required in newer versions
             __QrScannerCached = QrScanner;
             return QrScanner;
           }
@@ -168,6 +168,7 @@ function layout(
               activeCamera: 'environment',
               hasMultipleCameras: false,
               loading: true,
+              errorMessage: '',
               async init() {
                 const video = this.$refs.video;
                 if (!video) return;
@@ -183,6 +184,7 @@ function layout(
                   );
                 } catch (err) {
                   console.error('Failed to init qr-scanner', err);
+                  this.errorMessage = 'Failed to initialize scanner.';
                   return;
                 }
                 try {
@@ -190,6 +192,12 @@ function layout(
                   this.loading = false;
                 } catch (err) {
                   console.error('Failed to start camera', err);
+                  this.loading = false;
+                  if (err?.toString().includes('https')) {
+                     this.errorMessage = 'Camera access requires HTTPS. Please use a secure connection.';
+                  } else {
+                     this.errorMessage = 'Failed to start camera: ' + (err?.message || err);
+                  }
                 }
                 try {
                   const QrScanner = await __loadQrScanner();
@@ -213,7 +221,9 @@ function layout(
                 if (!dialog) return;
                 try {
                   dialog.showModal?.();
-                  this.scanner?.stop().catch(() => {});
+                  if (this.scanner) {
+                    Promise.resolve(this.scanner.stop()).catch(() => {});
+                  }
                 } catch (err) {
                   console.error('Failed to open dialog', err);
                 }
@@ -222,7 +232,9 @@ function layout(
                 const dialog = this.$refs.dialog;
                 if (!dialog) return;
                 dialog.close?.();
-                this.scanner?.start().catch(() => {});
+                if (this.scanner) {
+                  Promise.resolve(this.scanner.start()).catch(() => {});
+                }
               },
               async copyResult() {
                 try {
@@ -471,7 +483,7 @@ function readPage(lang: Lang) {
       <article class="contrast">
         <div x-show="hasMultipleCameras">
           <p class="secondary">${t(lang, "camera.label")}</p>
-          <div class="grid">
+          <div class="grid" style="grid-template-columns: 1fr 1fr;">
             <button
               type="button"
               :aria-pressed="activeCamera === 'environment'"
@@ -490,8 +502,11 @@ function readPage(lang: Lang) {
             </button>
           </div>
         </div>
+        <div x-show="errorMessage" style="color: var(--pico-del-color); margin-bottom: 1rem; padding: 1rem; border: 1px solid var(--pico-del-color); border-radius: var(--pico-border-radius);">
+          <strong x-text="errorMessage"></strong>
+        </div>
         <figure>
-          <video id="qr-video" x-ref="video" muted playsinline></video>
+          <video id="qr-video" x-ref="video" muted playsinline style="width: 100%; height: auto; border-radius: var(--pico-border-radius);"></video>
         </figure>
         <p x-show="loading" role="status" aria-live="polite">${t(lang, "loading")}</p>
       </article>
