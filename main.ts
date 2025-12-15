@@ -193,11 +193,8 @@ function layout(
                 } catch (err) {
                   console.error('Failed to start camera', err);
                   this.loading = false;
-                  if (err?.toString().includes('https')) {
-                     this.errorMessage = 'Camera access requires HTTPS. Please use a secure connection.';
-                  } else {
-                     this.errorMessage = 'Failed to start camera: ' + (err?.message || err);
-                  }
+                  // Show detailed error message for debugging
+                  this.errorMessage = `Camera Error: ${err?.name || 'Unknown'} - ${err?.message || err}`;
                 }
                 try {
                   const QrScanner = await __loadQrScanner();
