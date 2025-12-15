@@ -196,10 +196,10 @@ function layout(
                   // Check for common issues and provide actionable guidance
                   if (err?.name === 'NotAllowedError' || err?.name === 'PermissionDeniedError') {
                     this.errorMessage = ${JSON.stringify(t(lang, "camera.permissionDenied"))};
-                  } else if (err?.name === 'NotSupportedError' || location.protocol !== 'https:') {
+                  } else if (err?.name === 'NotSupportedError' || (location.protocol !== 'https:' && location.hostname !== 'localhost')) {
                     this.errorMessage = ${JSON.stringify(t(lang, "camera.httpsRequired"))};
                   } else {
-                    this.errorMessage = ${JSON.stringify(t(lang, "camera.genericError"))};
+                    this.errorMessage = ${JSON.stringify(t(lang, "camera.genericError"))} + ' (' + (err?.name || 'Error') + ')';
                   }
                 }
                 try {
